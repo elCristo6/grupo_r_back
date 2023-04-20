@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('mysql://root:91120152349.@localhost/database_r');
+const sequelize = require('../config/database');
 
 const User = sequelize.define('user', {
   cc: {

@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('./database');
-const Remision = require('./newRemission');
+const sequelize = require('../config/database');
 
 const DetalleFactura = sequelize.define('detailsNewRemission', {
   id: {
@@ -8,19 +7,17 @@ const DetalleFactura = sequelize.define('detailsNewRemission', {
     primaryKey: true,
     autoIncrement: true
   },
-  producto: {
-    type: Sequelize.STRING
+  material: {
+    type: Sequelize.STRING,
+    allowNull: false,
   },
   descripcion: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  peso: {
-    type: Sequelize.DECIMAL(10,2)
+  cantidad :{
+    type: Sequelize.INTEGER,
   }
 });
-// Definir relación uno a muchos entre Remisión y Producto
-newRemission.hasMany(DetalleFactura);
-DetalleFactura.belongsTo(newRemission);
 
 module.exports = DetalleFactura;

@@ -1,8 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('./database');
+const sequelize = require('../config/database');
+const Articulo = require('./detailsNewRemission');
 
-
-const newRemission = sequelize.define('newRemission', {
+const Factura = sequelize.define('newRemission', {
   id: {// numero del consecutivo
     type: Sequelize.INTEGER,
     primaryKey: true,
@@ -28,16 +28,7 @@ const newRemission = sequelize.define('newRemission', {
   placa: {
     type: Sequelize.STRING,
     allowNull: false,
-  },
-  /*producto: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  cantidad: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
- */
+  }, 
   despachado: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -52,4 +43,7 @@ const newRemission = sequelize.define('newRemission', {
   },
 });
 
-module.exports = newRemission;
+Articulo.belongsTo(Factura);
+Factura.hasMany(Articulo);// La factura tiene varios articulos
+module.exports = Factura;
+

@@ -1,13 +1,13 @@
 const express = require('express');
-const User = require('../models/newRemission.js'); 
-//const User = require('../models/detailsNewRemission.js');
+const Factura = require('../models/newRemission.js'); 
+const Articulo = require('../models/detailsNewRemission.js');
 const app = express.Router();
 
 app.use(express.json());
 
 app.get('/', (req, res) => {
   //res.send(usersDb);
-  User.findAll().then(users => {
+  Factura.findAll().then(users => {
     console.log(users); // Imprimir los usuarios en la consola
     res.send(users);
   });
@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 
 app.get('/:id', (req, res) => {
   const id = req.params.id; // Obtener el ID del usuario desde la solicitud GET
-  User.findOne({ where: { id: id } }) // Buscar el usuario con el ID especificado
+  Factura.findOne({ where: { id: id } }) // Buscar el usuario con el ID especificado
     .then((user) => {
       if (user) {
         res.send(user); // Enviar el usuario encontrado como respuesta
@@ -28,9 +28,9 @@ app.get('/:id', (req, res) => {
       res.status(500).send('Ha ocurrido un error al buscar el usuario'); // Enviar una respuesta de error al cliente
     });
 });
-
+/*
 app.post('/', (req, res) => {
-  User.create({
+  Factura.create({
     id: req.body.id,
     ciudad: req.body.ciudad,
     transportador: req.body.transportador,
@@ -52,13 +52,51 @@ app.post('/', (req, res) => {
       res.status(500).send('Ha ocurrido un error al crear el usuario'); // Enviar una respuesta de error al cliente
     });
 });
- 
+ */
+app.post('/', async (req, res) => {
+  const { id, ciudad, transportador,ccTransportador,direccion,placa, despachado, recibido,totalPeso,articulos } = req.body;
 
-app.put('/:cc', (req, res) => {
-  const cc = req.params.cc; // Obtener el ID del usuario desde la solicitud PUT
-  User.update(
-    { name: req.body.name, pass: req.body.pass,userType: req.body.userType},
-    { where: { cc: cc } } // Buscar y actualizar el usuario con el ID especificado
+  try {
+    // Crear la nueva instancia de factura
+    const factura = await Factura.create({
+      id,
+      ciudad,
+      transportador,
+      ccTransportador,
+      direccion,
+      placa,
+      despachado,
+      recibido,
+      totalPeso,
+    });
+    // Crear las instancias de artículos y asociarlas con la factura
+    await Promise.all(
+      articulos.map(async (articulo) => {
+        const { descripcion, cantidad, material } = articulo;
+        await Articulo.create({
+          descripcion,
+          cantidad,
+          material,
+          newRemissionId: factura.id // Establecer la relación con la factura
+        });
+      })
+    );
+
+    res.status(201).json({ mensaje: 'Factura creada exitosamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Ocurrió un error al crear la factura' });
+  }
+});
+/*
+app.put('/:id', (req, res) => {
+  const id = req.params.id; // Obtener el ID del usuario desde la solicitud PUT
+  Factura.update(
+    { ciudad: req.body.ciudad, 
+      transportador: req.body.pass,transportador, 
+      ccTransportador: req.body.ccTransportador
+    },
+    { where: { id: id } } // Buscar y actualizar el usuario con el ID especificado
   )
     .then(() => {
       res.send('Usuario actualizado correctamente'); // Enviar una respuesta al client
@@ -69,10 +107,10 @@ app.put('/:cc', (req, res) => {
     });
   
 });
-
-app.delete('/:cc', (req, res) => {
-  const id = req.params.cc; // Obtener el ID del usuario desde la solicitud DELETE
-  User.destroy({ where: { cc: id } }) // Buscar y eliminar el usuario con el ID especificado
+*/
+app.delete('/:id', (req, res) => {
+  const id = req.params.id; // Obtener el ID del usuario desde la solicitud DELETE
+  Factura.destroy({ where: { id: id } }) // Buscar y eliminar el usuario con el ID especificado
     .then(() => {
       res.send('Usuario eliminado correctamente'); // Enviar una respuesta al cliente
     })
