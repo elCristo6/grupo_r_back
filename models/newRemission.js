@@ -45,6 +45,10 @@ const Factura = sequelize.define('newRemission', {
   userCC: { // Cambio en el nombre del campo
     type: DataTypes.STRING, // Asegúrate de que coincida con el tipo de dato correcto para la identificación del usuario
     allowNull: false
+  },
+  empresa: { 
+    type: DataTypes.STRING, 
+     allowNull: false
   }
 });
 Factura.belongsTo(User, {

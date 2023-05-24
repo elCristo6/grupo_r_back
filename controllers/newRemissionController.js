@@ -33,7 +33,7 @@ const getAllRemission = async (req, res) => {
 
 }
 const createRemission = async (req, res) => {
-    const { id, ciudad, transportador,ccTransportador,direccion,placa, despachado, recibido,totalPeso,userCC,articulos } = req.body;  try {
+    const { id, ciudad, transportador,ccTransportador,direccion,placa, despachado, recibido,totalPeso,empresa,userCC,articulos } = req.body;  try {
         // Crear el usuario asociado a la factura
         const nuevoUsuario = await User.findByPk(userCC.cc);
         if (!nuevoUsuario) {
@@ -50,6 +50,7 @@ const createRemission = async (req, res) => {
           despachado,
           recibido,
           totalPeso,
+          empresa,
           userCC: userCC.cc// Asociar la factura al usuario creado
         });
     
